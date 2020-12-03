@@ -9,9 +9,23 @@
    `serve -s dist` - запуск раздачи статичных файлов
    
 ## Установка необходимых зависимостей:
-  `` - установка router
-  `` - установка vuex
-  `` - установка и добавление bootstrap
+  `vue add router` - установка router, vue cli все сделает сам
+  `npm install vuex --save` - установка vuex
+        создаем сам файл src/store/index.js
+
+        import Vue from 'vue';
+        import Vuex from 'vuex';
+        Vue.use(Vuex);
+    
+        export default new Vuex.Store({
+        
+   Добавляем файл в main.js
+    import store from './store'
+  `npm install bootstrap jquery popper.js` - установка bootstrap
+  Добавляем в main.js
+    import 'bootstrap'
+    import 'bootstrap/dist/css/bootstrap.min.css'
+  
   `` - 
   `` - 
   `` - 
