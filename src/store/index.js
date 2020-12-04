@@ -8,7 +8,6 @@ export default new Vuex.Store({
 
     },
     state: () => ({
-        foo:[],
         users: [
                 {
                     "id":1,
@@ -28,7 +27,6 @@ export default new Vuex.Store({
 
     }),
     getters: {
-        foo: state => state.foo,
         getAllUsers(state){
             return state.users;
         },
@@ -38,7 +36,6 @@ export default new Vuex.Store({
         getUserByEmail: (state) => (email) => {
             return state.users.find(user => user.email === email)
         },
-
     },
     mutations: {
         addUserMutation(state,newUser){
