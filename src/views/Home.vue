@@ -1,18 +1,39 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div class="home">
+        <img alt="Vue logo" src="../assets/logo.png">
+        <users-table :users="getAllUsers"
+                    @edit-user="editUser"
+                    @delete-user="deleteUser"/>
+    </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+    import UsersTable from '@/components/UsersTable.vue'
+    import {mapGetters, mapMutations} from 'vuex';
 
-export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  }
-}
+    export default {
+        name: 'Home',
+        components: {
+            UsersTable
+        },
+        computed: {
+            ...mapGetters(['getAllUsers']),
+
+        },
+        methods: {
+            ...mapMutations({
+               deleteUser: 'deleteUserMutation'
+            }),
+            editUser(user){
+                console.log(user);
+            }
+
+        },
+        mounted(){
+            console.log("home mounted");
+        }
+
+
+
+    }
 </script>

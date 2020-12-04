@@ -8,27 +8,54 @@ export default new Vuex.Store({
 
     },
     state: () => ({
-        foo:[]
+        foo:[],
+        users: [
+                {
+                    "id":1,
+                    "name": "Vitaliy",
+                    "surname": "Klichko",
+                    "phone":"099 991 28 41",
+                    "email":"some_email@com.ua"
+                },
+                {
+                    "id":2,
+                    "name": "Vladimir",
+                    "surname": "Klichko",
+                    "phone":"099 991 28 42",
+                    "email":"some_other_email@com.ua"
+                }
+            ]
+
     }),
     getters: {
         foo: state => state.foo,
+        getAllUsers(state){
+            return state.users;
+        },
+        getUserById: (state) => (id) => {
+            return state.users.find(user => user.id === id)
+        },
+        getUserByEmail: (state) => (email) => {
+            return state.users.find(user => user.email === email)
+        },
+
     },
     mutations: {
-        setFooMutation(state,foo){
-            state.foo = foo;
+        addUserMutation(state,newUser){
+            const index = state.users.findIndex(user => user.id === newUser.id);
+            if(index === -1){
+                state.users.push(newUser);
+            }
+            else{
+                state.users.splice(index,1,newUser);
+            }
+        },
+        deleteUserMutation(state,deletedUser){
+            const index = state.users.findIndex(user => user.id === deletedUser.id);
+            if(index !== -1) state.users.splice(index,1);
         }
     },
     actions:{
-        async fetchRailroadDocumentsAction({commit}){
-            try {
-                commit('setFooMutation','some value')
-            }catch(error){
-                console.log(error);
-            }finally {
-                console.log('ended');
-            }
-        }
+
     }
-
-
 })
