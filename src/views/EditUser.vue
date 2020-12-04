@@ -1,6 +1,10 @@
 <template>
-  <div class="about">
+  <div class="container-fluid">
     <h1>User edit page</h1>
+    <div class="container-md ml-lg-2 ml-md-1">
+      <user-edit-form/>
+    </div>
+
     <p>{{user.id}}</p>
     <p>{{user.name}}</p>
     <p>{{user.surname}}</p>
@@ -12,10 +16,12 @@
 <script>
     import UsersTable from '@/components/UsersTable.vue'
     import {mapGetters, mapMutations} from 'vuex';
+    import UserEditForm from "../components/UserEditForm.vue";
 
     export default {
-        name: 'Home',
+        name: 'EditUser',
         components: {
+            UserEditForm
             // UsersTable
         },
         data(){

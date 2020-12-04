@@ -47,5 +47,11 @@
 </script>
 
 <style scoped>
+    .scrollable-table{
+        width: 100%;
+        max-height: 40em;
+        overflow-y: scroll;
+        position: relative;
+    }
 
 </style>

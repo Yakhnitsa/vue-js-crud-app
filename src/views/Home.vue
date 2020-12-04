@@ -1,7 +1,10 @@
 <template>
     <div class="home">
-        <img alt="Vue logo" src="../assets/logo.png">
-        <div class="container-fluid">
+        <div class="text-center">
+            <img alt="Vue logo" src="../assets/logo.png">
+        </div>
+
+        <div class="container-lg ml-5">
             <div class="row"></div>
             <div class="row">
                 <users-table :users="getAllUsers"
