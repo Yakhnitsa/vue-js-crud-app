@@ -4,36 +4,45 @@
             {{userEditMode ? "Edit user": "Create new user"}}
         </div>
         <div class="card-body">
-            <form>
+            <form @submit="saveUser">
                 <div class="form-row mt-2">
                     <div class="btn-group btn-group-toggle">
                         <label class="btn btn-outline-secondary"
-                               :class="{'active': !importFromJson}">
-                            <input type="radio" v-model="importFromJson">
+                               :class="{'active': !jsonMode}">
+                            <input type="radio" v-bind:value="false" v-model="jsonMode">
                             Add user
                         </label>
                         <label class="btn btn-outline-secondary"
                                data-toggle="tooltip" data-placement="bottom"
                                :title="userEditMode ? 'Import from json is unavailable on edit mode':'import data from JSON'"
-                               :class="{'active': importFromJson, 'disabled': userEditMode }">
-                            <input :disabled="userEditMode" type="radio" value="asc" v-model="importFromJson" >
+                               :class="{'active': jsonMode, 'disabled': userEditMode }">
+                            <input :disabled="userEditMode" type="radio" v-bind:value="true" v-model="jsonMode">
                             Import from json
                         </label>
                     </div>
                 </div>
                 <hr/>
-                <div v-if="!importFromJson">
+                <div v-if="!jsonMode">
                     <div class="form-row mt-2">
                         <div class="col-lg-5 col-md-6">
                             <label for="nameInput">User name</label>
-                            <input type="text" v-model="formData.name" class="form-control" id="nameInput" placeholder="name">
+                            <input type="text" v-model="formData.name"
+                                   class="form-control" id="nameInput" placeholder="name" required>
+                            <!--<div class="valid-feedback">-->
+                                <!--name is ok!-->
+                            <!--</div>-->
+                            <!--<div class="invalid-feedback">-->
+                                <!--Please choose a username.-->
+                            <!--</div>-->
 
                         </div>
                         <div class="col-lg-5  col-md-6">
                             <label for="surnameInput" class="text-left">User surname</label>
-                            <input type="text" v-model="formData.surname" class="form-control" id="surnameInput" placeholder="surname">
-                            <div class="valid-feedback">
-                            </div>
+                            <input type="text" v-model="formData.surname"
+                                   class="form-control" id="surnameInput" placeholder="surname" required>
+                            <!--<div class="valid-feedback">-->
+                                <!--surname is ok!-->
+                            <!--</div>-->
                         </div>
                     </div>
 
@@ -44,10 +53,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="emailInputPrepend">@</span>
                                 </div>
-                                <input type="email" v-model="formData.email" class="form-control" id="userEmailInput" placeholder="email" aria-describedby="emailInputPrepend">
-                                <div class="invalid-feedback">
-                                    Please choose a username.
-                                </div>
+                                <input type="email" v-model="formData.email" class="form-control" id="userEmailInput"
+                                       placeholder="email" aria-describedby="emailInputPrepend">
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6">
@@ -55,9 +62,6 @@
                             <div class="input-group">
                                 <input type="text" v-model="formData.phone" class="form-control" id="phoneInput" placeholder="(XXX) XXX-XX-XX"
                                        aria-describedby="phoneInputPrepend">
-                                <div class="invalid-feedback">
-                                    Please choose a username.
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -65,7 +69,15 @@
                 <div v-else>
                     <div class="form-row mt-2">
                         <label for="jsonTextArea">Place json array</label>
-                        <textarea v-model="jsonData" class="form-control" id="jsonTextArea" rows="3"></textarea>
+                        <textarea v-model.lazy="jsonData"
+                                  :class="{'is-invalid' : !jsonIsValid, 'is-valid': jsonIsValid}"
+                                  class="form-control" id="jsonTextArea" rows="3"></textarea>
+                        <div class="invalid-feedback">
+                            Invalid json data
+                        </div>
+                        <div class="valid-feedback">
+                            JSON data is ok, found {{usersFromJson.length}} records
+                        </div>
                     </div>
                 </div>
                 <hr/>
@@ -74,7 +86,7 @@
                     <button type="button" class="btn btn-secondary mx-1"
                             v-if="userEditMode"
                             @click="addNewUser">New user</button>
-                    <button type="button" class="btn btn-secondary mx-1" @click="saveUser">Save</button>
+                    <button type="submit" class="btn btn-secondary mx-1">Save</button>
                     <button type="button" class="btn btn-secondary mx-1" @click="clearFields">Revert changes</button>
                 </div>
 
@@ -98,30 +110,57 @@
                     email:null,
                     phone:null,
                 },
-                importFromJson: false,
+                jsonMode: false,
                 jsonData:''
             }
         },
         computed:{
             userEditMode(){
                 return this.formData.id !== null;
+            },
+            usersFromJson(){
+                let users = [];
+                try{
+                    users = JSON.parse(this.jsonData);
+                }catch(e){
+                    return [];
+                }
+                users.forEach(user =>{
+                    if(!this.checkUser(user)) return [];
+                });
+                return users;
+            },
+            jsonIsValid(){
+                return this.usersFromJson.length > 0;
             }
         },
         methods:{
-
             saveUser(){
-                this.$emit('save-user', Object.assign({},this.formData));
-                if(!this.userEditMode){
-                    this.clearFields();
+                if(this.jsonMode && this.jsonIsValid){
+                    this.usersFromJson.forEach(user =>
+                        this.$emit('save-user',user)
+                    )
+                }
+                else{
+                    this.$emit('save-user', Object.assign({},this.formData));
+                    if(!this.userEditMode){
+                        this.clearFields();
+                    }
                 }
             },
+            checkUser(user){
+                if(!user.hasOwnProperty('name') || user.name.length < 1) return false;
+                if(!user.hasOwnProperty('surname') || user.surname.length < 1) return false;
+                if(!user.hasOwnProperty('email')) return false;
+                return user.hasOwnProperty('phone');
+            },
             addNewUser(){
+
                 this.$emit('new-user');
                 for(const[key,value] of Object.entries(this.formData)){
                     this.formData[key] = null;
                 }
             },
-
 
             clearFields(){
                 if(this.userEditMode){
@@ -131,6 +170,7 @@
                     for(const[key,value] of Object.entries(this.formData)){
                         this.formData[key] = null;
                     }
+                    this.jsonData = ''
                 }
 
             },
