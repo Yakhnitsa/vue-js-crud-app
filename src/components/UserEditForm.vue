@@ -26,12 +26,12 @@
                     <div class="form-row mt-2">
                         <div class="col-lg-5 col-md-6">
                             <label for="nameInput">User name</label>
-                            <input type="text" v-model="user.name" class="form-control" id="nameInput" placeholder="name">
+                            <input type="text" v-model="formData.name" class="form-control" id="nameInput" placeholder="name">
 
                         </div>
                         <div class="col-lg-5  col-md-6">
                             <label for="surnameInput" class="text-left">User surname</label>
-                            <input type="text" v-model="user.surname" class="form-control" id="surnameInput" placeholder="surname">
+                            <input type="text" v-model="formData.surname" class="form-control" id="surnameInput" placeholder="surname">
                             <div class="valid-feedback">
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="emailInputPrepend">@</span>
                                 </div>
-                                <input type="email" v-model="user.email" class="form-control" id="userEmailInput" placeholder="email" aria-describedby="emailInputPrepend">
+                                <input type="email" v-model="formData.email" class="form-control" id="userEmailInput" placeholder="email" aria-describedby="emailInputPrepend">
                                 <div class="invalid-feedback">
                                     Please choose a username.
                                 </div>
@@ -53,7 +53,7 @@
                         <div class="col-lg-4 col-md-6">
                             <label for="phoneInput">Phone number</label>
                             <div class="input-group">
-                                <input type="text" v-model="user.phone" class="form-control" id="phoneInput" placeholder="(XXX) XXX-XX-XX"
+                                <input type="text" v-model="formData.phone" class="form-control" id="phoneInput" placeholder="(XXX) XXX-XX-XX"
                                        aria-describedby="phoneInputPrepend">
                                 <div class="invalid-feedback">
                                     Please choose a username.
@@ -72,7 +72,7 @@
 
                 <div class="form-row mt-2 justify-content-end">
                     <button type="button" class="btn btn-secondary mx-1" @click="saveUser">Save</button>
-                    <button type="button" class="btn btn-secondary mx-1" @click="revertChanges">Revert changes</button>
+                    <button type="button" class="btn btn-secondary mx-1" @click="clearFields">Revert changes</button>
                 </div>
 
             </form>
@@ -88,22 +88,42 @@
         props:['user'],
         data(){
             return{
+                formData:{
+                    id: null,
+                    name:null,
+                    surname:null,
+                    email:null,
+                    phone:null,
+                },
                 importFromJson: false,
                 jsonData:''
             }
         },
         computed:{
             userEditMode(){
-                return this.user !== undefined && this.user.id > 0;
+                return this.formData.id !== null;
             }
         },
         methods:{
 
             saveUser(){
-                if(this.userNameValidation() && this.emailValidation())
-                this.$emit('save-user', this.user);
+                this.$emit('save-user', Object.assign({},this.formData));
+                if(!this.userEditMode){
+                    this.clearFields();
+                }
             },
-            revertChanges(){
+
+            clearFields(){
+                if(this.userEditMode){
+                    for(const[key,value] of Object.entries(this.formData)){
+                        this.formData[key] = this.user[key];
+                    }
+                }
+                else{
+                    for(const[key,value] of Object.entries(this.formData)){
+                        this.formData[key] = null;
+                    }
+                }
 
             },
             validateJson(){
@@ -112,14 +132,16 @@
             validateForm(){
 
             },
-            userNameValidation(){
-                return true;
-            },
-            emailValidation(){
-                return true;
-            },
-            phoneValidation(){
 
+        },
+        watch:{
+            user(val){
+                if(val !== undefined){
+                    this.formData = Object.assign(this.formData,val);
+                    // for(const[key,value] of Object.entries(this.user)){
+                    //     this.formData[key] = this.user[key];
+                    // }
+                }
             }
         },
         mounted(){

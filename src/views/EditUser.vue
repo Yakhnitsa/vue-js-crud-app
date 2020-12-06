@@ -24,31 +24,18 @@
         },
         data(){
             return{
-                user:{
-                    id: null,
-                    name: null,
-                    surname: null,
-                    email: null,
-                    phone: null
-                }
+                user: {}
             }
         },
 
         computed:{
             ...mapGetters(['getUserByEmail','getUserById','getAllUsers']),
-            editMode(){
-                const userId = this.$route.params.id;
-                return userId !== undefined;
-            }
         },
         methods:{
             ...mapMutations(['addUserMutation','deleteUserMutation']),
 
             saveUser(user){
                 this.addUserMutation(user);
-                if(!this.editMode()){
-                   this.clearCurrentUser();
-                }
             },
             editUser(user){
                 this.$router.push({ path: `/edit-user/${user.id}`});
@@ -65,21 +52,29 @@
                     clearUser[key] = null;
                 }
                 this.user = clearUser;
-            }
-        },
-        mounted(){
-            const userId = this.$route.params.id;
-            if(userId){
-                const userFromStore = this.getUserById(parseInt(userId));
-                if(userFromStore !== undefined){
-                    for(const[key,value] of Object.entries(userFromStore)){
-                        this.user[key] = userFromStore[key];
+            },
+            loadUserFromStore(){
+                const userId = this.$route.params.id;
+                if(userId){
+                    const userFromStore = this.getUserById(parseInt(userId));
+                    if(userFromStore !== undefined){
+                        this.user = Object.assign({},userFromStore);
+                        // for(const[key,value] of Object.entries(userFromStore)){
+                        //     this.user[key] = userFromStore[key];
+                        // }
+                    }else{
+                        this.$router.push({ path: '/edit-user'});
                     }
-                }else{
-                    this.$router.push({ path: '/edit-user'});
                 }
             }
-
+        },
+        watch:{
+            $route(to,from){
+                this.loadUserFromStore();
+          }
+        },
+        mounted(){
+            this.loadUserFromStore();
         }
     }
 
