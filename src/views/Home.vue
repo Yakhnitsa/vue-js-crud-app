@@ -37,7 +37,7 @@
             }),
             editUser(user){
                 const userId = user.id;
-                this.$router.push({ path: `edit-user/${userId}` });
+                this.$router.push({ path: `edit-user/${userId}`});
             },
             addNewUser(){
                 this.$router.push({path: 'edit-user'});
@@ -46,8 +46,6 @@
         },
         mounted(){
         }
-
-
 
     }
 </script>
