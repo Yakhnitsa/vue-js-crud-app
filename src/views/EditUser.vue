@@ -1,8 +1,7 @@
 <template>
   <div class="container-fluid">
-    <h1>User edit page</h1>
-    <div class="container-md ml-lg-2 ml-md-1">
-      <user-edit-form :user="user" @save-user="saveUser"/>
+    <div class="container-md ml-lg-2 ml-md-1 mt-3">
+      <user-edit-form :user="user" @save-user="saveUser"  @new-user="newUser"/>
     </div>
     <div class="container-md ml-lg-2 ml-md-1 mt-2">
       <users-table :users="getAllUsers" @edit-user="editUser" @delete-user="deleteUser"/>
@@ -14,7 +13,7 @@
 <script>
     import UsersTable from '@/components/UsersTable.vue'
     import {mapGetters, mapMutations} from 'vuex';
-    import UserEditForm from "../components/UserEditForm.vue";
+    import UserEditForm from "@/components/UserEditForm.vue";
 
     export default {
         name: 'EditUser',
@@ -34,6 +33,9 @@
         methods:{
             ...mapMutations(['addUserMutation','deleteUserMutation']),
 
+            newUser(){
+                this.$router.push({ path: '/edit-user/'});
+            },
             saveUser(user){
                 this.addUserMutation(user);
             },

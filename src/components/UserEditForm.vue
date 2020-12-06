@@ -71,6 +71,9 @@
                 <hr/>
 
                 <div class="form-row mt-2 justify-content-end">
+                    <button type="button" class="btn btn-secondary mx-1"
+                            v-if="userEditMode"
+                            @click="addNewUser">New user</button>
                     <button type="button" class="btn btn-secondary mx-1" @click="saveUser">Save</button>
                     <button type="button" class="btn btn-secondary mx-1" @click="clearFields">Revert changes</button>
                 </div>
@@ -112,12 +115,17 @@
                     this.clearFields();
                 }
             },
+            addNewUser(){
+                this.$emit('new-user');
+                for(const[key,value] of Object.entries(this.formData)){
+                    this.formData[key] = null;
+                }
+            },
+
 
             clearFields(){
                 if(this.userEditMode){
-                    for(const[key,value] of Object.entries(this.formData)){
-                        this.formData[key] = this.user[key];
-                    }
+                    this.formData = Object.assign({},this.user);
                 }
                 else{
                     for(const[key,value] of Object.entries(this.formData)){
@@ -138,9 +146,6 @@
             user(val){
                 if(val !== undefined){
                     this.formData = Object.assign(this.formData,val);
-                    // for(const[key,value] of Object.entries(this.user)){
-                    //     this.formData[key] = this.user[key];
-                    // }
                 }
             }
         },
@@ -154,4 +159,12 @@
     label{
         margin-left: 1em;
     }
+    hr {
+        margin-top: .4rem;
+        margin-bottom: .4rem;
+    }
+    .card-body {
+        padding: .75rem;
+    }
+
 </style>

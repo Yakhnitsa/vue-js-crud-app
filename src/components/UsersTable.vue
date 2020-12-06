@@ -53,5 +53,12 @@
         overflow-y: scroll;
         position: relative;
     }
+     .table td, .table th {
+         padding: .2rem .75rem;
+     }
+    .btn{
+        padding: .15rem .75rem;
+    }
+
 
 </style>
