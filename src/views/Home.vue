@@ -1,8 +1,8 @@
 <template>
     <div class="home">
-        <div class="text-center">
-            <img alt="Vue logo" src="../assets/logo.png">
-        </div>
+        <!--<div class="text-center">-->
+            <!--<img alt="Vue logo" src="../assets/logo.png">-->
+        <!--</div>-->
 
         <div class="container-lg ml-5">
             <div class="row my-2">

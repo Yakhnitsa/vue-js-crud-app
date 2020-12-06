@@ -1,22 +1,22 @@
 <template>
     <div class="scrollable-table">
         <table class="table table-striped table-hover">
-            <thead>
+            <thead class="bg-light">
                 <tr>
-                    <th>name</th>
-                    <th>surname</th>
-                    <th>phone</th>
-                    <th>email</th>
-                    <th>actions</th>
+                    <th class="text-center">name</th>
+                    <th class="text-center">surname</th>
+                    <th class="text-center">phone</th>
+                    <th class="text-center">email</th>
+                    <th class="text-center">actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="user in users" :key="user.id">
-                    <td>{{user.id}}_{{user.name}}</td>
+                    <td>{{user.name}}</td>
                     <td>{{user.surname}}</td>
                     <td>{{user.phone}}</td>
                     <td>{{user.email}}</td>
-                    <td>
+                    <td style="width: 175px">
                         <button type="button"
                                 @click="editUser(user)"
                                 class="btn btn-secondary mx-1">edit</button>
@@ -49,13 +49,19 @@
 <style scoped>
     .scrollable-table{
         width: 100%;
-        max-height: 40em;
+        max-height: 25em;
         overflow-y: scroll;
         position: relative;
     }
      .table td, .table th {
          padding: .2rem .75rem;
      }
+    thead th {
+        position: -webkit-sticky;
+        position: sticky;
+        top:0;
+        background-color: #f8f9fa;
+    }
     .btn{
         padding: .15rem .75rem;
     }

@@ -25,7 +25,7 @@ export default new Vuex.Store({
     },
     mutations: {
         addUserMutation(state,user){
-            user.id = user.id ? getUserId(): user.id;
+            user.id = (user.id === undefined || user.id ==='') ? getUserId(): user.id;
             const index = state.users.findIndex(item => item.id === user.id);
             if(index === -1){
                 state.users.push(user);

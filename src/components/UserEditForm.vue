@@ -4,7 +4,7 @@
             {{userEditMode ? "Edit user": "Create new user"}}
         </div>
         <div class="card-body">
-            <form @submit="saveUser">
+            <form>
                 <div class="form-row mt-2">
                     <div class="btn-group btn-group-toggle">
                         <label class="btn btn-outline-secondary"
@@ -22,27 +22,33 @@
                     </div>
                 </div>
                 <hr/>
+
                 <div v-if="!jsonMode">
                     <div class="form-row mt-2">
                         <div class="col-lg-5 col-md-6">
                             <label for="nameInput">User name</label>
-                            <input type="text" v-model="formData.name"
+                            <input type="text" v-model.lazy="formData.name"
+                                   :class="{ 'is-invalid': formErrors.name===true , 'is-valid': formErrors.name===false }"
                                    class="form-control" id="nameInput" placeholder="name" required>
-                            <!--<div class="valid-feedback">-->
-                                <!--name is ok!-->
-                            <!--</div>-->
-                            <!--<div class="invalid-feedback">-->
-                                <!--Please choose a username.-->
-                            <!--</div>-->
+                            <div class="invalid-feedback">
+                                Invalid user name!
+                            </div>
+                            <div class="valid-feedback">
+                                User name is ok
+                            </div>
 
                         </div>
                         <div class="col-lg-5  col-md-6">
                             <label for="surnameInput" class="text-left">User surname</label>
-                            <input type="text" v-model="formData.surname"
+                            <input type="text" v-model.lazy="formData.surname"
+                                   :class="{ 'is-invalid': formErrors.surname === true, 'is-valid': formErrors.surname === false}"
                                    class="form-control" id="surnameInput" placeholder="surname" required>
-                            <!--<div class="valid-feedback">-->
-                                <!--surname is ok!-->
-                            <!--</div>-->
+                            <div class="invalid-feedback">
+                                Invalid user surname!
+                            </div>
+                            <div class="valid-feedback">
+                                User surname is ok
+                            </div>
                         </div>
                     </div>
 
@@ -86,7 +92,7 @@
                     <button type="button" class="btn btn-secondary mx-1"
                             v-if="userEditMode"
                             @click="addNewUser">New user</button>
-                    <button type="submit" class="btn btn-secondary mx-1">Save</button>
+                    <button type="button" class="btn btn-secondary mx-1" @click="saveUser">Save</button>
                     <button type="button" class="btn btn-secondary mx-1" @click="clearFields">Revert changes</button>
                 </div>
 
@@ -104,11 +110,17 @@
         data(){
             return{
                 formData:{
-                    id: null,
-                    name:null,
-                    surname:null,
-                    email:null,
-                    phone:null,
+                    id: '',
+                    name:'',
+                    surname:'',
+                    email:'',
+                    phone:'',
+                },
+                formErrors:{
+                    name:'',
+                    surname:'',
+                    email:'',
+                    phone:'',
                 },
                 jsonMode: false,
                 jsonData:''
@@ -116,8 +128,9 @@
         },
         computed:{
             userEditMode(){
-                return this.formData.id !== null;
+                return this.formData.id !== '';
             },
+
             usersFromJson(){
                 let users = [];
                 try{
@@ -142,23 +155,25 @@
                     )
                 }
                 else{
+                    if(!this.validateForm(this.formData)) return;
                     this.$emit('save-user', Object.assign({},this.formData));
                     if(!this.userEditMode){
                         this.clearFields();
                     }
                 }
             },
+
             checkUser(user){
-                if(!user.hasOwnProperty('name') || user.name.length < 1) return false;
-                if(!user.hasOwnProperty('surname') || user.surname.length < 1) return false;
+                if(!this.nameValidation(user)) return false;
+                if(!this.surnameValidation(user)) return false;
                 if(!user.hasOwnProperty('email')) return false;
                 return user.hasOwnProperty('phone');
             },
-            addNewUser(){
 
+            addNewUser(){
                 this.$emit('new-user');
                 for(const[key,value] of Object.entries(this.formData)){
-                    this.formData[key] = null;
+                    this.formData[key] = '';
                 }
             },
 
@@ -168,18 +183,34 @@
                 }
                 else{
                     for(const[key,value] of Object.entries(this.formData)){
-                        this.formData[key] = null;
+                        this.formData[key] = '';
                     }
                     this.jsonData = ''
                 }
+                this.clearErrors();
 
             },
-            validateJson(){
 
+            validateForm(form){
+                this.formErrors.name = this.nameValidation(form);
+                this.formErrors.surname = this.surnameValidation(form);
+                return this.formErrors.name && this.formErrors.surname;
             },
-            validateForm(){
 
+            nameValidation(user){
+                return user.hasOwnProperty('name') ? user.name.length > 1 : false;
             },
+
+            surnameValidation(user){
+                return user.hasOwnProperty('surname') ? user.surname.length > 1 : false;
+            },
+
+            clearErrors(){
+                for(const[key,value] of Object.entries(this.formErrors)){
+                    this.formErrors[key] = '';
+                }
+            },
+
 
         },
         watch:{
@@ -189,9 +220,7 @@
                 }
             }
         },
-        mounted(){
 
-        }
     }
 </script>
 
