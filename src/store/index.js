@@ -8,23 +8,7 @@ export default new Vuex.Store({
 
     },
     state: () => ({
-        users: [
-                {
-                    "id":1,
-                    "name": "Vitaliy",
-                    "surname": "Klichko",
-                    "phone":"099 991 28 41",
-                    "email":"some_email@com.ua"
-                },
-                {
-                    "id":2,
-                    "name": "Vladimir",
-                    "surname": "Klichko",
-                    "phone":"099 991 28 42",
-                    "email":"some_other_email@com.ua"
-                }
-            ]
-
+        users: []
     }),
     getters: {
         getAllUsers(state){
@@ -38,17 +22,19 @@ export default new Vuex.Store({
         },
     },
     mutations: {
-        addUserMutation(state,newUser){
-            const index = state.users.findIndex(user => user.id === newUser.id);
+        addUserMutation(state,user){
+            user.id = user.id === null? getUserId(): user.id;
+            const index = state.users.findIndex(item => item.id === user.id);
             if(index === -1){
-                state.users.push(newUser);
+
+                state.users.push(user);
             }
             else{
-                state.users.splice(index,1,newUser);
+                state.users.splice(index,1,user);
             }
         },
-        deleteUserMutation(state,deletedUser){
-            const index = state.users.findIndex(user => user.id === deletedUser.id);
+        deleteUserMutation(state, user){
+            const index = state.users.findIndex(item => item.id === user.id);
             if(index !== -1) state.users.splice(index,1);
         }
     },
@@ -56,3 +42,8 @@ export default new Vuex.Store({
 
     }
 })
+
+let userId = 1;
+function getUserId(){
+    return userId++;
+}

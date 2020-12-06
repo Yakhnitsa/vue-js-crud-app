@@ -1,10 +1,23 @@
 <template>
   <div id="app">
+      <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+          <a class="navbar-brand" href="/">Home</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
 
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/edit-user">Edit</router-link>
-    </div>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                  <li class="nav-item">
+                      <router-link to="/" class="nav-link">Home</router-link>
+                  </li>
+                  <li class="nav-item">
+                      <router-link to="/edit-user" class="nav-link">Edit</router-link>
+                  </li>
+
+              </ul>
+          </div>
+      </nav>
     <router-view/>
   </div>
 </template>
@@ -17,16 +30,16 @@
   color: #2c3e50;
 }
 
-#nav {
-  padding: 30px;
-}
+/*#nav {*/
+  /*padding: 30px;*/
+/*}*/
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+/*#nav a {*/
+  /*font-weight: bold;*/
+  /*color: #2c3e50;*/
+/*}*/
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+/*#nav a.router-link-exact-active {*/
+  /*color: #42b983;*/
+/*}*/
 </style>

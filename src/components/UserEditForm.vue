@@ -1,7 +1,7 @@
 <template>
     <div class="card">
-        <div class="card-header">
-            Creating new record
+        <div class="card-header text-white" :class="userEditMode ? 'bg-secondary':'bg-success'">
+            {{userEditMode ? "Edit user": "Create new user"}}
         </div>
         <div class="card-body">
             <form>
@@ -13,8 +13,10 @@
                             Add user
                         </label>
                         <label class="btn btn-outline-secondary"
-                               :class="{'active': importFromJson }">
-                            <input type="radio" value="asc" v-model="importFromJson">
+                               data-toggle="tooltip" data-placement="bottom"
+                               :title="userEditMode ? 'Import from json is unavailable on edit mode':'import data from JSON'"
+                               :class="{'active': importFromJson, 'disabled': userEditMode }">
+                            <input :disabled="userEditMode" type="radio" value="asc" v-model="importFromJson" >
                             Import from json
                         </label>
                     </div>
@@ -23,15 +25,13 @@
                 <div v-if="!importFromJson">
                     <div class="form-row mt-2">
                         <div class="col-lg-5 col-md-6">
-                            <label for="nameInput text-left">User name</label>
-                            <input type="text" class="form-control" id="nameInput" placeholder="name">
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div>
+                            <label for="nameInput">User name</label>
+                            <input type="text" v-model="user.name" class="form-control" id="nameInput" placeholder="name">
+
                         </div>
                         <div class="col-lg-5  col-md-6">
                             <label for="surnameInput" class="text-left">User surname</label>
-                            <input type="text" class="form-control" id="surnameInput" placeholder="surname">
+                            <input type="text" v-model="user.surname" class="form-control" id="surnameInput" placeholder="surname">
                             <div class="valid-feedback">
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="emailInputPrepend">@</span>
                                 </div>
-                                <input type="email" class="form-control" id="userEmailInput" placeholder="email" aria-describedby="emailInputPrepend">
+                                <input type="email" v-model="user.email" class="form-control" id="userEmailInput" placeholder="email" aria-describedby="emailInputPrepend">
                                 <div class="invalid-feedback">
                                     Please choose a username.
                                 </div>
@@ -53,10 +53,7 @@
                         <div class="col-lg-4 col-md-6">
                             <label for="phoneInput">Phone number</label>
                             <div class="input-group">
-                                <!--<div class="input-group-prepend">-->
-                                <!--<span class="input-group-text" id="phoneInputPrepend">@</span>-->
-                                <!--</div>-->
-                                <input type="text" class="form-control" id="phoneInput" placeholder="(XXX) XXX-XX-XX"
+                                <input type="text" v-model="user.phone" class="form-control" id="phoneInput" placeholder="(XXX) XXX-XX-XX"
                                        aria-describedby="phoneInputPrepend">
                                 <div class="invalid-feedback">
                                     Please choose a username.
@@ -91,17 +88,20 @@
         props:['user'],
         data(){
             return{
-                name:'',
-                surname:'',
-                email:'',
-                phone:'',
                 importFromJson: false,
                 jsonData:''
             }
         },
+        computed:{
+            userEditMode(){
+                return this.user !== undefined && this.user.id > 0;
+            }
+        },
         methods:{
-            saveUser(){
 
+            saveUser(){
+                if(this.userNameValidation() && this.emailValidation())
+                this.$emit('save-user', this.user);
             },
             revertChanges(){
 
@@ -113,14 +113,17 @@
 
             },
             userNameValidation(){
-
+                return true;
             },
             emailValidation(){
-
+                return true;
             },
             phoneValidation(){
 
             }
+        },
+        mounted(){
+
         }
     }
 </script>

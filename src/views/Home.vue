@@ -5,7 +5,9 @@
         </div>
 
         <div class="container-lg ml-5">
-            <div class="row"></div>
+            <div class="row my-2">
+                <button @click="addNewUser" class="btn btn-primary">Add new user</button>
+            </div>
             <div class="row">
                 <users-table :users="getAllUsers"
                              @edit-user="editUser"
@@ -36,6 +38,9 @@
             editUser(user){
                 const userId = user.id;
                 this.$router.push({ path: `edit-user/${userId}` });
+            },
+            addNewUser(){
+                this.$router.push({path: 'edit-user'});
             }
 
         },

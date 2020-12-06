@@ -2,15 +2,13 @@
   <div class="container-fluid">
     <h1>User edit page</h1>
     <div class="container-md ml-lg-2 ml-md-1">
-      <user-edit-form/>
+      <user-edit-form :user="user" @save-user="saveUser"/>
+    </div>
+    <div class="container-md ml-lg-2 ml-md-1 mt-2">
+      <users-table :users="getAllUsers" @edit-user="editUser" @delete-user="deleteUser"/>
     </div>
 
-    <p>{{user.id}}</p>
-    <p>{{user.name}}</p>
-    <p>{{user.surname}}</p>
-    <p>{{user.email}}</p>
-    <p>{{user.phone}}</p>
-    <!--<users-table></users-table>-->
+
   </div>
 </template>
 <script>
@@ -21,41 +19,65 @@
     export default {
         name: 'EditUser',
         components: {
+            UsersTable,
             UserEditForm
-            // UsersTable
         },
         data(){
             return{
                 user:{
-                    id:'',
-                    name:'new user',
-                    surname:'new User',
-                    email:'new email',
-                    phone:'new phone'
+                    id: null,
+                    name: null,
+                    surname: null,
+                    email: null,
+                    phone: null
                 }
             }
         },
 
         computed:{
-            ...mapGetters(['getUserByEmail','getUserById']),
+            ...mapGetters(['getUserByEmail','getUserById','getAllUsers']),
+            editMode(){
+                const userId = this.$route.params.id;
+                return userId !== undefined;
+            }
         },
         methods:{
+            ...mapMutations(['addUserMutation','deleteUserMutation']),
 
+            saveUser(user){
+                this.addUserMutation(user);
+                if(!this.editMode()){
+                   this.clearCurrentUser();
+                }
+            },
             editUser(user){
-
+                this.$router.push({ path: `/edit-user/${user.id}`});
             },
             deleteUser(user){
-
+              this.deleteUserMutation(user);
             },
             checkUser(user){
 
+            },
+            clearCurrentUser(){
+                const clearUser = {};
+                for(const[key,value] of Object.entries(this.user)){
+                    clearUser[key] = null;
+                }
+                this.user = clearUser;
             }
         },
         mounted(){
             const userId = this.$route.params.id;
             if(userId){
                 const userFromStore = this.getUserById(parseInt(userId));
-                this.user  = userFromStore !== undefined ? userFromStore : this.user;
+                if(userFromStore !== undefined){
+                    for(const[key,value] of Object.entries(userFromStore)){
+                        this.user[key] = userFromStore[key];
+                    }
+                }else{
+                    this.$router.push({ path: '/edit-user'});
+                }
             }
 
         }
