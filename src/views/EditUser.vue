@@ -1,13 +1,11 @@
 <template>
-  <div class="container-fluid">
-    <div class="container-md ml-lg-2 ml-md-1 mt-3">
+  <div class="container-fluid p-0">
+    <div class="container-md ml-0 mt-3 p-0">
       <user-edit-form :user="user" @save-user="saveUser"  @new-user="newUser"/>
     </div>
-    <div class="container-md ml-lg-2 ml-md-1 mt-2">
+    <div class="container-md ml-0 mt-3 p-0">
       <users-table :users="getAllUsers" @edit-user="editUser" @delete-user="deleteUser"/>
     </div>
-
-
   </div>
 </template>
 <script>

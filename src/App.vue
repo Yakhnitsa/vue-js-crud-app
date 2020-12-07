@@ -1,7 +1,7 @@
 <template>
   <div id="app">
       <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
-          <a class="navbar-brand" href="/">Home</a>
+          <a class="navbar-brand" href="/">Vue.js CRUD application</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
           </button>
@@ -18,7 +18,10 @@
               </ul>
           </div>
       </nav>
-    <router-view/>
+      <div class="container-fluid ml-sm-0 ml-md-2 ml-lg-5">
+          <router-view/>
+      </div>
+
   </div>
 </template>
 

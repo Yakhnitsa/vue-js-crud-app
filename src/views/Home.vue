@@ -1,20 +1,15 @@
 <template>
     <div class="home">
-        <!--<div class="text-center">-->
-            <!--<img alt="Vue logo" src="../assets/logo.png">-->
-        <!--</div>-->
-
-        <div class="container-lg ml-5">
-            <div class="row my-2">
+        <div class="container-lg ml-0">
+            <div class="row mt-2">
                 <button @click="addNewUser" class="btn btn-primary">Add new user</button>
             </div>
-            <div class="row">
+            <div class="row mt-2">
                 <users-table :users="getAllUsers"
                              @edit-user="editUser"
                              @delete-user="deleteUser"/>
             </div>
         </div>
-
     </div>
 </template>
 

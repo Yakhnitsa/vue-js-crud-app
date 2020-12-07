@@ -28,7 +28,7 @@
                         <div class="col-lg-5 col-md-6">
                             <label for="nameInput">User name</label>
                             <input type="text" v-model.lazy="formData.name"
-                                   :class="{ 'is-invalid': formErrors.name===true , 'is-valid': formErrors.name===false }"
+                                   :class="{ 'is-invalid': formIsValid.name===false , 'is-valid': formIsValid.name===true }"
                                    class="form-control" id="nameInput" placeholder="name" required>
                             <div class="invalid-feedback">
                                 Invalid user name!
@@ -41,7 +41,7 @@
                         <div class="col-lg-5  col-md-6">
                             <label for="surnameInput" class="text-left">User surname</label>
                             <input type="text" v-model.lazy="formData.surname"
-                                   :class="{ 'is-invalid': formErrors.surname === true, 'is-valid': formErrors.surname === false}"
+                                   :class="{ 'is-invalid': formIsValid.surname === false, 'is-valid': formIsValid.surname === true}"
                                    class="form-control" id="surnameInput" placeholder="surname" required>
                             <div class="invalid-feedback">
                                 Invalid user surname!
@@ -72,6 +72,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div v-else>
                     <div class="form-row mt-2">
                         <label for="jsonTextArea">Place json array</label>
@@ -116,7 +117,7 @@
                     email:'',
                     phone:'',
                 },
-                formErrors:{
+                formIsValid:{
                     name:'',
                     surname:'',
                     email:'',
@@ -139,10 +140,12 @@
                     return [];
                 }
                 users.forEach(user =>{
+                    user.id = '';
                     if(!this.checkUser(user)) return [];
                 });
                 return users;
             },
+
             jsonIsValid(){
                 return this.usersFromJson.length > 0;
             }
@@ -150,8 +153,9 @@
         methods:{
             saveUser(){
                 if(this.jsonMode && this.jsonIsValid){
-                    this.usersFromJson.forEach(user =>
-                        this.$emit('save-user',user)
+                    this.usersFromJson.forEach(user =>{
+                            this.$emit('save-user',user)
+                        }
                     )
                 }
                 else{
@@ -161,6 +165,8 @@
                         this.clearFields();
                     }
                 }
+                this.clearErrors();
+
             },
 
             checkUser(user){
@@ -187,14 +193,12 @@
                     }
                     this.jsonData = ''
                 }
-                this.clearErrors();
-
             },
 
             validateForm(form){
-                this.formErrors.name = this.nameValidation(form);
-                this.formErrors.surname = this.surnameValidation(form);
-                return this.formErrors.name && this.formErrors.surname;
+                this.formIsValid.name = this.nameValidation(form);
+                this.formIsValid.surname = this.surnameValidation(form);
+                return this.formIsValid.name && this.formIsValid.surname;
             },
 
             nameValidation(user){
@@ -206,11 +210,10 @@
             },
 
             clearErrors(){
-                for(const[key,value] of Object.entries(this.formErrors)){
-                    this.formErrors[key] = '';
+                for(const[key,value] of Object.entries(this.formIsValid)){
+                    this.formIsValid[key] = '';
                 }
             },
-
 
         },
         watch:{
