@@ -12,6 +12,7 @@
                             <input type="radio" v-bind:value="false" v-model="jsonMode">
                             Add user
                         </label>
+
                         <label class="btn btn-outline-secondary"
                                data-toggle="tooltip" data-placement="bottom"
                                :title="userEditMode ? 'Import from json is unavailable on edit mode':'import data from JSON'"
@@ -66,7 +67,8 @@
                         <div class="col-lg-4 col-md-6">
                             <label for="phoneInput">Phone number</label>
                             <div class="input-group">
-                                <input type="text" v-model="formData.phone" class="form-control" id="phoneInput" placeholder="(XXX) XXX-XX-XX"
+                                <input type="text" v-model="formData.phone" class="form-control" id="phoneInput"
+                                       placeholder="(XXX) XXX-XX-XX"
                                        aria-describedby="phoneInputPrepend">
                             </div>
                         </div>
@@ -92,7 +94,8 @@
                 <div class="form-row mt-2 justify-content-end">
                     <button type="button" class="btn btn-secondary mx-1"
                             v-if="userEditMode"
-                            @click="addNewUser">New user</button>
+                            @click="addNewUser">New user
+                    </button>
                     <button type="button" class="btn btn-secondary mx-1" @click="saveUser">Save</button>
                     <button type="button" class="btn btn-secondary mx-1" @click="clearFields">Revert changes</button>
                 </div>
@@ -107,61 +110,61 @@
 <script>
     export default {
         name: "UserEditForm",
-        props:['user'],
-        data(){
-            return{
-                formData:{
+        props: ['user'],
+        data() {
+            return {
+                formData: {
                     id: '',
-                    name:'',
-                    surname:'',
-                    email:'',
-                    phone:'',
+                    name: '',
+                    surname: '',
+                    email: '',
+                    phone: '',
                 },
-                formIsValid:{
-                    name:'',
-                    surname:'',
-                    email:'',
-                    phone:'',
+                formIsValid: {
+                    name: '',
+                    surname: '',
+                    email: '',
+                    phone: '',
                 },
                 jsonMode: false,
-                jsonData:''
+                jsonData: ''
             }
         },
-        computed:{
-            userEditMode(){
+        computed: {
+            userEditMode() {
                 return this.formData.id !== '';
             },
 
-            usersFromJson(){
+            usersFromJson() {
                 let users = [];
-                try{
+                try {
                     users = JSON.parse(this.jsonData);
-                }catch(e){
+                } catch (e) {
                     return [];
                 }
-                users.forEach(user =>{
+                users.forEach(user => {
                     user.id = '';
-                    if(!this.checkUser(user)) return [];
+                    if (!this.checkUser(user)) return [];
                 });
                 return users;
             },
 
-            jsonIsValid(){
+            jsonIsValid() {
                 return this.usersFromJson.length > 0;
             }
         },
-        methods:{
-            saveUser(){
-                if(this.jsonMode && this.jsonIsValid){
-                    this.usersFromJson.forEach(user =>{
-                            this.$emit('save-user',user)
+        methods: {
+            saveUser() {
+                if (this.jsonMode && this.jsonIsValid) {
+                    this.usersFromJson.forEach(user => {
+                            this.$emit('save-user', user)
                         }
                     )
                 }
-                else{
-                    if(!this.validateForm(this.formData)) return;
-                    this.$emit('save-user', Object.assign({},this.formData));
-                    if(!this.userEditMode){
+                else {
+                    if (!this.validateForm(this.formData)) return;
+                    this.$emit('save-user', Object.assign({}, this.formData));
+                    if (!this.userEditMode) {
                         this.clearFields();
                     }
                 }
@@ -169,57 +172,57 @@
 
             },
 
-            checkUser(user){
-                if(!this.nameValidation(user)) return false;
-                if(!this.surnameValidation(user)) return false;
-                if(!user.hasOwnProperty('email')) return false;
+            checkUser(user) {
+                if (!this.nameValidation(user)) return false;
+                if (!this.surnameValidation(user)) return false;
+                if (!user.hasOwnProperty('email')) return false;
                 return user.hasOwnProperty('phone');
             },
 
-            addNewUser(){
+            addNewUser() {
                 this.$emit('new-user');
-                for(const[key,value] of Object.entries(this.formData)){
+                for (const [key, value] of Object.entries(this.formData)) {
                     this.formData[key] = '';
                 }
             },
 
-            clearFields(){
-                if(this.userEditMode){
-                    this.formData = Object.assign({},this.user);
+            clearFields() {
+                if (this.userEditMode) {
+                    this.formData = Object.assign({}, this.user);
                 }
-                else{
-                    for(const[key,value] of Object.entries(this.formData)){
+                else {
+                    for (const [key, value] of Object.entries(this.formData)) {
                         this.formData[key] = '';
                     }
                     this.jsonData = ''
                 }
             },
 
-            validateForm(form){
+            validateForm(form) {
                 this.formIsValid.name = this.nameValidation(form);
                 this.formIsValid.surname = this.surnameValidation(form);
                 return this.formIsValid.name && this.formIsValid.surname;
             },
 
-            nameValidation(user){
+            nameValidation(user) {
                 return user.hasOwnProperty('name') ? user.name.length > 1 : false;
             },
 
-            surnameValidation(user){
+            surnameValidation(user) {
                 return user.hasOwnProperty('surname') ? user.surname.length > 1 : false;
             },
 
-            clearErrors(){
-                for(const[key,value] of Object.entries(this.formIsValid)){
+            clearErrors() {
+                for (const [key, value] of Object.entries(this.formIsValid)) {
                     this.formIsValid[key] = '';
                 }
             },
 
         },
-        watch:{
-            user(val){
-                if(val !== undefined){
-                    this.formData = Object.assign(this.formData,val);
+        watch: {
+            user(val) {
+                if (val !== undefined) {
+                    this.formData = Object.assign(this.formData, val);
                 }
             }
         },
@@ -228,13 +231,15 @@
 </script>
 
 <style scoped>
-    label{
+    label {
         margin-left: 1em;
     }
+
     hr {
         margin-top: .4rem;
         margin-bottom: .4rem;
     }
+
     .card-body {
         padding: .75rem;
     }

@@ -32,10 +32,10 @@
             }),
             editUser(user){
                 const userId = user.id;
-                this.$router.push({ path: `edit-user/${userId}`});
+                this.$router.push({ path: `edit-user/${userId}`}).catch(()=>{});
             },
             addNewUser(){
-                this.$router.push({path: 'edit-user'});
+                this.$router.push({path: 'edit-user'}).catch(()=>{});
             }
 
         },

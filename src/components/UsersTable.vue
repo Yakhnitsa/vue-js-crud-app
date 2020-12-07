@@ -20,10 +20,10 @@
                     <td>
                         <button type="button"
                                 @click="editUser(user)"
-                                class="btn btn-secondary mx-1">edit</button>
+                                class="btn btn-secondary m-1">edit</button>
                         <button type="button"
                                 @click="deleteUser(user)"
-                                class="btn btn-secondary mx-1">delete</button>
+                                class="btn btn-secondary m-1">delete</button>
                     </td>
                 </tr>
                 </tbody>
@@ -50,41 +50,43 @@
 </script>
 
 <style scoped>
-    .table-container{
-        border: 1px solid rgba(0,0,0,.125);
+    .table-container {
+        border: 1px solid rgba(0, 0, 0, .125);
         border-radius: .25rem;
         width: 100%;
         padding: .75rem;
     }
-    .scrollable-table{
+
+    .scrollable-table {
         width: 100%;
         max-height: 25em;
         overflow-y: scroll;
         position: relative;
     }
-     .table td, .table th {
-         padding: .2rem .75rem;
-     }
+
+    .table td, .table th {
+        padding: .2rem .75rem;
+    }
+
     thead th {
         position: -webkit-sticky;
         position: sticky;
-        top:0;
+        top: 0;
         background-color: #f8f9fa;
     }
 
-    td, th{
+    td, th {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        /*max-width: 15em;*/
+        max-width: 15em;
     }
 
-    td:hover{
+    td:hover {
         white-space: normal;
     }
-    .btn{
+
+    .btn {
         padding: .15rem .75rem;
     }
-
-
 </style>

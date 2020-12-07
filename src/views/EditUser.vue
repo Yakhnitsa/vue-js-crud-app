@@ -32,26 +32,17 @@
             ...mapMutations(['addUserMutation','deleteUserMutation']),
 
             newUser(){
-                this.$router.push({ path: '/edit-user/'});
+                this.$router.push({ path: '/edit-user/'}).catch(()=>{});
             },
             saveUser(user){
                 this.addUserMutation(user);
             },
             editUser(user){
-                this.$router.push({ path: `/edit-user/${user.id}`});
+                this.$router.push({ path: `/edit-user/${user.id}`}).catch(()=>{});
+                this.loadUserFromStore();
             },
             deleteUser(user){
               this.deleteUserMutation(user);
-            },
-            checkUser(user){
-
-            },
-            clearCurrentUser(){
-                const clearUser = {};
-                for(const[key,value] of Object.entries(this.user)){
-                    clearUser[key] = null;
-                }
-                this.user = clearUser;
             },
             loadUserFromStore(){
                 const userId = this.$route.params.id;
@@ -59,19 +50,11 @@
                     const userFromStore = this.getUserById(parseInt(userId));
                     if(userFromStore !== undefined){
                         this.user = Object.assign({},userFromStore);
-                        // for(const[key,value] of Object.entries(userFromStore)){
-                        //     this.user[key] = userFromStore[key];
-                        // }
                     }else{
-                        this.$router.push({ path: '/edit-user'});
+                        this.$router.push({ path: '/edit-user'}).catch(()=>{});
                     }
                 }
             }
-        },
-        watch:{
-            $route(to,from){
-                this.loadUserFromStore();
-          }
         },
         mounted(){
             this.loadUserFromStore();
